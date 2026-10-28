@@ -61,7 +61,7 @@ jobs:
       - name: Checkout Infra Repository
         uses: actions/checkout@v4
         with:
-          repository: 'adam-lechnos/flask-app-infra' # <--- Change to your GitHub org/repo
+          repository: 'adam-lechnos/devops-gitops-two-repo-infra' # <--- Change to your GitHub org/repo
           token: ${{ secrets.GITOPS_REPO_TOKEN }}
           path: infra-repo
 
