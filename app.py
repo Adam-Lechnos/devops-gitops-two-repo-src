@@ -12,7 +12,7 @@ def hello_world():
 
 @app.route('/api/greet', methods=['GET'])
 def greet_user():
-    return {"message": "Hello from src repo!!", "status": "success"}, 200
+    return {"message": "Hello from src repo!! New Message!!", "status": "success"}, 200
 
 
 if __name__ == "__main__":
