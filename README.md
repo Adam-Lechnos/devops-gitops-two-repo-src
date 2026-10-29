@@ -15,6 +15,46 @@ This repository houses the application source code and continuous integration (C
   - **Development (Bleeding Edge):** Every push to `main` executes unit tests, builds a container image tagged with a short Git SHA (`sha-abc1234`), and automatically updates the Dev overlay in the infra repo.
   - **Releases (Stable):** Pushing a Semantic Version tag (`v*.*.*`) triggers a dedicated release pipeline to build immutable artifacts for QA and Production promotion.
 
+````mermaid
+flowchart TD
+    subgraph Developer_Workflows ["Developer Actions"]
+        A["Push to Feature Branch / Open PR"]
+        B["Merge PR / Push to main"]
+        C["Push SemVer Tag v*.*.*"]
+    end
+
+    subgraph CI_Pipeline ["GitHub Actions Pipeline (ci.yml / release.yml)"]
+        direction TB
+        T["Unit Testing (pytest)"]
+        
+        subgraph Gate ["Quality Gate"]
+            T_Pass{"Tests Passed?"}
+        end
+
+        BP["Build and Push Container"]
+        UP["Update GitOps Repo"]
+        REL["Release Job: Tag Release Image"]
+    end
+
+    subgraph External_Targets ["External System Targets"]
+        GHCR[("GitHub Container Registry")]
+        INFRA[("Infra Repo overlays/dev")]
+    end
+
+    A --> T
+    B --> T
+    C --> REL
+    REL --> GHCR
+
+    T --> T_Pass
+    T_Pass -- "No" --> HALT["Pipeline Blocked / PR Failed"]
+    T_Pass -- "Yes (Main Push Only)" --> BP
+    
+    BP --> GHCR
+    BP --> UP
+    UP --> INFRA
+````
+
 ---
 
 ## 🧪 Testing & Local Development
